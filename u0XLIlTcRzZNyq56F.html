@@ -1,0 +1,511 @@
+<html><head><base href="suppehue.com"><title>SuppeHue - Soup Color Generator</title>
+<style>
+:root {
+  --soup-color: #e6b87d;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Playfair Display', serif;
+  background: #f9f5f0;
+  color: #2c1810;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+h1 {
+  font-size: 3.5rem;
+  margin: 0;
+  color: #8b4513;
+}
+
+header p:first-of-type {
+  font-size: 1.8rem;
+  color: #8b4513;
+  margin-bottom: 1.5rem;
+}
+
+header p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.soup-bowl {
+  width: 300px;
+  height: 300px;
+  margin: 2rem auto;
+  position: relative;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.steam {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.controls {
+  text-align: center;
+  margin: 2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50px;
+  background: #8b4513;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+.recipe {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  margin-top: 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.facts {
+  text-align: center;
+  font-style: italic;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+.video-container {
+  margin: 2rem auto;
+  max-width: 800px;
+  position: relative;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.video-wrapper {
+  position: relative;
+  width: calc(33.33% - 14px);
+  padding-bottom: calc(18.75% + 40px); /* Added extra space for title */
+}
+
+.video-wrapper h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  color: #8b4513;
+  text-align: center;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+  .video-wrapper {
+    width: 100%;
+    padding-bottom: calc(56.25% + 40px); /* Added extra space for title */
+    margin-bottom: 20px;
+  }
+}
+
+@keyframes steam {
+  0% { transform: translateY(0) translateX(-50%) scale(1); opacity: 0.8; }
+  100% { transform: translateY(-20px) translateX(-50%) scale(1.5); opacity: 0; }
+}
+
+@keyframes bubble {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes soupWave {
+  0% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(1px) translateY(-1px); }
+  50% { transform: translateX(-1px) translateY(1px); }
+}
+
+@keyframes soupShimmer {
+  0% { opacity: 0.2; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.2; }
+}
+
+@keyframes surfaceWave {
+  0% { d: "M20,65 C30,64 40,65 50,64 C60,63 70,64 80,65"; }
+  50% { d: "M20,64 C30,65 40,64 50,65 C60,64 70,65 80,64"; }
+  100% { d: "M20,65 C30,64 40,65 50,64 C60,63 70,64 80,65"; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>SuppeHue</h1>
+    <p>Fakta</p>
+    <div style="max-width: 800px; margin: 0 auto; text-align: left; background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p>Suppe er en flytende rett som lages ved å koke kjøtt, fisk, grønnsaker eller andre ingredienser i vann eller kraft. Supper kan være klare eller tykke, og serveres vanligvis varme. De kan være en forrett eller hovedrett.</p>
+      <p>Suppe har vært en viktig del av kostholdet i mange kulturer gjennom historien. Det er en av de eldste matrettene, og arkeologiske funn tyder på at mennesker har laget suppe helt siden de begynte å bruke vanntette beholdere for omtrent 20,000 år siden.</p>
+      <p>I dagens kosthold er suppe fortsatt en populær rett, både som hverdagsmat og festmat. Det finnes utallige varianter av suppe, fra enkle grønnsakssupper til mer komplekse retter med mange ingredienser og lang tilberedningstid.</p>
+    </div>
+    <div id="factText" class="facts">Spennende suppe-fakta kommer her...</div>
+  </header>
+
+  <div class="soup-bowl" id="soupBowl">
+    <svg class="steam" width="100" height="50" viewBox="0 0 100 50">
+      <path d="M30,50 Q40,35 30,20 Q40,5 50,20 Q60,35 70,20 Q80,5 70,20 Q60,35 70,50" 
+            fill="none" 
+            stroke="#8b4513" 
+            stroke-width="2" 
+            opacity="0.5">
+        <animate attributeName="d" 
+                 dur="3s" 
+                 repeatCount="indefinite"
+                 values="M30,50 Q40,35 30,20 Q40,5 50,20 Q60,35 70,20 Q80,5 70,20 Q60,35 70,50;
+                         M30,50 Q40,35 40,20 Q30,5 50,20 Q70,35 60,20 Q50,5 70,20 Q60,35 70,50;
+                         M30,50 Q40,35 30,20 Q40,5 50,20 Q60,35 70,20 Q80,5 70,20 Q60,35 70,50"/>
+      </path>  
+    </svg>
+    
+    <svg width="300" height="300" viewBox="0 0 100 100">
+      <!-- Bowl shadow -->
+      <ellipse cx="50" cy="75" rx="42" ry="8" fill="rgba(0,0,0,0.1)" />
+      
+      <!-- Bowl base -->
+      <ellipse cx="50" cy="70" rx="40" ry="20" fill="#f0f0f0" />
+      <ellipse cx="50" cy="70" rx="36" ry="18" fill="#e0e0e0" />
+      
+      <!-- Bowl rim highlight -->
+      <path d="M10,70 C10,70 50,90 90,70" 
+            stroke="#ffffff" 
+            stroke-width="2" 
+            fill="none" 
+            opacity="0.6" />
+      
+      <!-- Soup liquid with multiple layers for depth -->
+      <g class="soup-liquid">
+        <!-- Deep layer -->
+        <path d="M14,70 C14,70 50,87 86,70 C86,70 77,45 50,45 C23,45 14,70 14,70" 
+              fill="var(--soup-color)" 
+              opacity="0.95">
+          <animate attributeName="d" 
+                   dur="4s" 
+                   repeatCount="indefinite"
+                   values="M14,70 C14,70 50,87 86,70 C86,70 77,45 50,45 C23,45 14,70 14,70;
+                           M14,70 C14,70 50,85 86,70 C86,70 77,47 50,47 C23,47 14,70 14,70;
+                           M14,70 C14,70 50,87 86,70 C86,70 77,45 50,45 C23,45 14,70 14,70"/>
+        </path>
+        
+        <!-- Middle layer for depth -->
+        <path d="M16,68 C16,68 50,84 84,68 C84,68 75,47 50,47 C25,47 16,68 16,68" 
+              fill="var(--soup-color)" 
+              opacity="0.7">
+          <animate attributeName="d" 
+                   dur="3.5s" 
+                   repeatCount="indefinite"
+                   values="M16,68 C16,68 50,84 84,68 C84,68 75,47 50,47 C25,47 16,68 16,68;
+                           M16,68 C16,68 50,82 84,68 C84,68 75,49 50,49 C25,49 16,68 16,68;
+                           M16,68 C16,68 50,84 84,68 C84,68 75,47 50,47 C25,47 16,68 16,68"/>
+        </path>
+
+        <!-- Surface highlights -->
+        <path d="M20,65 C30,64 40,65 50,64 C60,63 70,64 80,65" 
+              stroke="rgba(255,255,255,0.5)" 
+              stroke-width="1.5" 
+              fill="none">
+          <animate attributeName="d" 
+                   dur="3s" 
+                   repeatCount="indefinite"
+                   values="M20,65 C30,64 40,65 50,64 C60,63 70,64 80,65;
+                           M20,64 C30,65 40,64 50,65 C60,64 70,65 80,64;
+                           M20,65 C30,64 40,65 50,64 C60,63 70,64 80,65"/>
+        </path>
+
+        <!-- Multiple surface shimmers -->
+        <circle cx="30" cy="60" r="2" fill="rgba(255,255,255,0.4)">
+          <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.4;0.1;0.4"/>
+          <animate attributeName="cx" dur="4s" repeatCount="indefinite" values="30;32;30"/>
+        </circle>
+        <circle cx="70" cy="62" r="1.5" fill="rgba(255,255,255,0.4)">
+          <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0.4;0.1;0.4"/>
+          <animate attributeName="cx" dur="3.5s" repeatCount="indefinite" values="70;68;70"/>
+        </circle>
+        <circle cx="50" cy="61" r="1.8" fill="rgba(255,255,255,0.4)">
+          <animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="0.4;0.1;0.4"/>
+          <animate attributeName="cx" dur="4.5s" repeatCount="indefinite" values="50;52;50"/>
+        </circle>
+
+        <!-- Light reflection gradient -->
+        <defs>
+          <linearGradient id="soupGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,0.2);stop-opacity:0.2">
+              <animate attributeName="stop-opacity" values="0.2;0.3;0.2" dur="3s" repeatCount="indefinite"/>
+            </stop>
+            <stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:0"/>
+          </linearGradient>
+        </defs>
+        <path d="M20,60 C30,59 40,60 60,59 C70,58 75,59 80,60" 
+              fill="none" 
+              stroke="url(#soupGradient)" 
+              stroke-width="4" 
+              opacity="0.5">
+          <animate attributeName="d" 
+                   dur="4s" 
+                   repeatCount="indefinite"
+                   values="M20,60 C30,59 40,60 60,59 C70,58 75,59 80,60;
+                           M20,59 C30,60 40,59 60,60 C70,59 75,60 80,59;
+                           M20,60 C30,59 40,60 60,59 C70,58 75,59 80,60"/>
+        </path>
+      </g>
+      
+      <!-- Bowl rim -->
+      <path d="M10,70 C10,70 50,90 90,70" 
+            stroke="#d4d4d4" 
+            stroke-width="3" 
+            fill="none" />
+      <path d="M15,70 Q50,88 85,70" 
+            stroke="rgba(255,255,255,0.3)" 
+            stroke-width="1" 
+            fill="none" />
+      <path d="M15,71 Q50,89 85,71" 
+            stroke="rgba(0,0,0,0.1)" 
+            stroke-width="1" 
+            fill="none" />
+    </svg>
+  </div>
+
+  <div class="controls">
+    <button onclick="generateSoup('vegetable')">Grønnsakssuppe</button>
+    <button onclick="generateSoup('tomato')">Tomatsuppe</button>
+    <button onclick="generateSoup('pumpkin')">Gresskarsuppe</button>
+    <button onclick="generateSoup('mushroom')">Soppsuppe</button>
+    <button onclick="generateSoup('carrot')">Gulrotsuppe</button>
+    <button onclick="generateSoup('fish')">Fiskesuppe</button>
+    <button onclick="generateSoup('random')">Tilfeldig Suppe</button>
+  </div>
+
+  <div class="recipe" id="recipe">
+    <h2>Din Suppeoppskrift</h2>
+    <p id="recipeText">Klikk en knapp for å generere en suppe!</p>
+  </div>
+
+  <div class="video-container">
+    <div class="video-wrapper">
+      <h3>Tomatsuppe med pasta</h3>
+      <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/QX2yfIG0w6w" 
+              title="Tomatsuppe med pasta"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <h3>Kremet blomkålsuppe</h3>
+      <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/ey-1FMi1Cik" 
+              title="Kremet blomkålsuppe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <h3>Asiatisk nudelsuppe</h3>
+      <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/vvDwiLJkpUo" 
+              title="Asiatisk nudelsuppe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <h3>Thaisuppe med kokosmelk</h3>
+      <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/AoWh5B7VxQk" 
+              title="Thaisuppe med kokosmelk"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <h3>Løksuppe</h3>
+      <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/ZoTx8S9dTXk" 
+              title="Løksuppe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <h3>Thaisuppe med røde linser</h3>
+      <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/TQMYGLIubcg" 
+              title="Thaisuppe med røde linser"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+const soupTypes = {
+  vegetable: {
+    colors: ['#a1c181', '#97a97c', '#809848'],
+    description: 'En næringsrik grønnsakssuppe med ferske hageingredienser',
+    facts: [
+      'Grønnsakssuppe ble først populært på 1700-tallet',
+      'Grønnsakssuppe er rik på vitaminer og mineraler',
+      'En varm grønnsakssuppe kan inneholde opptil 8 forskjellige grønnsaker',
+      'Grønnsakssuppe er en av de eldste kjente matrettene i verden',
+      'I middelalderen var grønnsakssuppe ofte et tegn på velstand',
+      'Grønnsakssuppe er en av de mest populære suppene i verden',
+      'Minestrone, en italiensk grønnsakssuppe, har røtter tilbake til romertiden',
+      'Under andre verdenskrig var grønnsakssuppe en viktig næringskilde',
+      'Nesten alle kulturer har sin egen versjon av grønnsakssuppe',
+      'Ferske urter kan øke næringsverdien i grønnsakssuppe betydelig'
+    ]
+  },
+  tomato: {
+    colors: ['#ff6b6b', '#c92a2a', '#e03131'],
+    description: 'En klassisk tomatsuppe med en skvett fløte',
+    facts: [
+      'Tomatsuppe ble først servert i Amerika i 1872',
+      'Tomater er teknisk sett en frukt',
+      'Tomatsuppe inneholder lykopen, en kraftig antioksidant',
+      'Under den store depresjonen var tomatsuppe en viktig matkilde',
+      'Campbell\'s produserte sin første tomatsuppe i 1897',
+      'Amerikanske skolebarn spiser over 10 millioner porsjoner tomatsuppe årlig',
+      'Andy Warhol gjorde Campbell\'s tomatsuppe til et pop-art ikon i 1962',
+      'Den første oppskriften på tomatsuppe ble publisert i 1857',
+      'Tomatsuppe og grillet ost-sandwich ble en populær kombinasjon under den store depresjonen',
+      'Ferske basilikumblader er den mest populære garnityren på tomatsuppe'
+    ]
+  },
+  pumpkin: {
+    colors: ['#e6b87d', '#d69e2e', '#f6ad55'],
+    description: 'En kremete gresskarsuppe med høstkrydder',
+    facts: [
+      'Gresskarsuppe er en tradisjonell høstrett',
+      'Gresskar inneholder mer kalium enn en banan',
+      'Gresskarsuppe ble først populært i Australia',
+      'Gresskar har vært dyrket i over 10,000 år',
+      'Den største gresskaren som noensinne er dyrket veide over 1000 kg',
+      'Gresskarsuppe er særlig populær under Halloween-sesongen',
+      'Gresskar er 90% vann men likevel næringsrik',
+      'Urfolk i Amerika brukte gresskar som både mat og medisin',
+      'Gresskarfrø er spiselige og ofte brukt som garnityr på suppen',
+      'Muskat er det mest brukte krydderet i gresskarsuppe'
+    ]
+  },
+  mushroom: {
+    colors: ['#8b7355', '#796451', '#6d4c41'],
+    description: 'En kremet soppsuppe med skogsopp',
+    facts: [
+      'Soppsuppe er særlig populært i Øst-Europa',
+      'Det finnes over 50,000 spiselige sopparter',
+      'Soppsuppe er rik på D-vitamin',
+      'Sopp har vært brukt i matlaging i over 7000 år',
+      'Noen sopper som brukes i suppe kan være selvlysende',
+      'Frankrike er verdens største produsent av dyrkede sopp',
+      'Kantareller gir suppen en naturlig gylden farge',
+      'Sjampinjong er den mest brukte soppen i soppsuppe',
+      'Trøffel er den dyreste soppen som brukes i suppe',
+      'Soppsuppe var opprinnelig en rett for kongelige i det gamle Kina'
+    ]
+  },
+  carrot: {
+    colors: ['#ff7f50', '#ff6b3d', '#ff8c00'],
+    description: 'En søt og varmende gulrotsuppe',
+    facts: [
+      'Gulrøtter ble først dyrket i Afghanistan',
+      'Gulrotsuppe er rik på betakaroten',
+      'Gulrøtter var opprinnelig lilla før de ble oransje',
+      'Den lengste gulroten som er dyrket var over 6 meter lang',
+      'Gulrøtter ble først brukt som medisin, ikke mat',
+      'Under andre verdenskrig ble gulrotsuppe brukt som naturlig søtningsmiddel',
+      'En oppskrift på gulrotsuppe ble funnet i en engelsk kokebok fra 1726',
+      'Gulrøtter kan forbedre nattsynet',
+      'Nederlandske bønder utviklet den oransje gulroten på 1600-tallet',
+      'Ingefær er ofte brukt sammen med gulrot i suppe for ekstra smak'
+    ]
+  },
+  fish: {
+    colors: ['#fff5e6', '#ffe4c4', '#ffdab9'],
+    description: 'En kremet fiskesuppe med fersk torsk og grønnsaker',
+    facts: [
+      'Fiskesuppe er en viktig del av norsk matkultur',
+      'Bergen er kjent for sin unike fiskesuppe',
+      'Tradisjonell fiskesuppe inneholder ofte både fisk og skalldyr',
+      'Fiskesuppe har vært en viktig kilde til næring i kystsamfunn i tusenvis av år',
+      'Den eldste kjente oppskriften på fiskesuppe er over 1000 år gammel',
+      'I Japan spises det fiskesuppe til frokost',
+      'Bouillabaisse, en fransk fiskesuppe, ble oppfunnet av fiskere i Marseille',
+      'Safran er det dyreste krydderet som brukes i fiskesuppe',
+      'Norsk fiskesuppe inneholder ofte både torsk og laks',
+      'Fiskesuppe er spesielt rik på omega-3 fettsyrer'
+    ]
+  }
+};
+
+function generateSoup(type) {
+  let color;
+  let description;
+  let fact;
+  
+  if (type === 'random') {
+    const hue = Math.floor(Math.random() * 360);
+    const saturation = Math.floor(Math.random() * 40 + 60);
+    const lightness = Math.floor(Math.random() * 30 + 40);
+    color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    description = 'En mystisk suppe med uventede smaker';
+    fact = 'Det finnes over 1000 forskjellige suppeoppskrifter verden over!';
+  } else {
+    const soupType = soupTypes[type];
+    color = soupType.colors[Math.floor(Math.random() * soupType.colors.length)];
+    description = soupType.description;
+    fact = soupType.facts[Math.floor(Math.random() * soupType.facts.length)];
+  }
+
+  document.documentElement.style.setProperty('--soup-color', color);
+  document.getElementById('recipeText').textContent = description;
+  document.getElementById('factText').textContent = fact;
+  
+  const soupBowl = document.getElementById('soupBowl');
+  soupBowl.style.animation = 'bubble 0.5s ease';
+  
+  // Add subtle random movements to the soup liquid
+  const soupLiquid = document.querySelector('.soup-liquid');
+  soupLiquid.style.animation = 'soupWave 3s ease-in-out infinite';
+  
+  setTimeout(() => {
+    soupBowl.style.animation = '';
+  }, 500);
+}
+
+window.onload = () => generateSoup('pumpkin');
+</script>
+</body></html>
